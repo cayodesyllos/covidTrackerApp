@@ -44,6 +44,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 16,
   },
+  regularTextMini: {
+    color: 'white',
+    alignItems: 'center',
+    fontSize: 12,
+  },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',

@@ -1,14 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  StatusBar,
-  Image,
-  TextInput,
-  TouchableHighlight,
-  Text,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import {View, StatusBar, TouchableHighlight, Text, Alert} from 'react-native';
 import {StyleSheet} from 'react-native';
 import navigationService from '../services/NavigationService';
 import MainStyles from '../style/MainStyles';

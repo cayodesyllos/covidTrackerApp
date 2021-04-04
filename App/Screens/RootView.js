@@ -4,9 +4,10 @@ import {
   StatusBar,
   TouchableOpacity,
   Text,
-  ActivityIndicator,
   SafeAreaView,
   Alert,
+  Linking,
+  FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {StyleSheet} from 'react-native';
@@ -20,12 +21,115 @@ import {
   faBell,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import {ScrollView} from 'react-native-gesture-handler';
+import {
+  ScrollView,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 import MainStyles from '../style/MainStyles';
 import Colors from '../style/Colors';
+import QRCode from 'react-native-qrcode-generator';
 
 const QR = (props) => {
-  return <ScrollView contentContainerStyle={MainStyles.container} />;
+  const [locations, setLocations] = React.useState([]);
+  const [selectedQr, setSelectedQr] = React.useState(null);
+  useEffect(() => {
+    mountRequests();
+  }, []);
+
+  const mountRequests = async () => {
+    const response = await api.get('/locations');
+    setLocations(response.data);
+  };
+
+  const createdLocation = async (name) => {
+    const response = await api.post('/location', {name: name});
+    setLocations([response.data, ...locations]);
+    setSelectedQr(`covidtracker://${response.data.token}`);
+  };
+
+  const renderItem = ({item}) => (
+    <View
+      style={{
+        width: '80%',
+        height: 60,
+        alignSelf: 'center',
+        borderBottomColor: 'white',
+        padding: 10,
+        borderRadius: 10,
+        borderWidth: 0,
+        backgroundColor: Colors.DARK_GRAY,
+        marginBottom: 10,
+      }}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          setSelectedQr(`covidtracker://${item.token}`);
+        }}
+        style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <FontAwesomeIcon
+          style={{
+            color: 'white',
+            fontSize: 40,
+            alignSelf: 'flex-start',
+          }}
+          size={40}
+          icon={faQrcode}
+        />
+        <Text style={MainStyles.regularText}>{item.name}</Text>
+        <Text style={[MainStyles.regularTextMini, {alignSelf: 'flex-end'}]}>
+          {item.created_at}
+        </Text>
+      </TouchableWithoutFeedback>
+    </View>
+  );
+
+  return (
+    <ScrollView contentContainerStyle={MainStyles.container}>
+      {selectedQr !== null ? (
+        <QRCode value={selectedQr} size={200} bgColor="black" fgColor="white" />
+      ) : (
+        <View
+          style={{
+            width: 200,
+            height: 200,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: 'white',
+          }}
+        />
+      )}
+
+      <TouchableOpacity
+        style={[MainStyles.buttonContainer, MainStyles.regularButton, {}]}
+        onPress={() => {
+          Alert.prompt('Create location', 'Input the name of the location', [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {
+              text: 'Create',
+              onPress: (name) => createdLocation(name),
+            },
+          ]);
+        }}>
+        <Text style={MainStyles.regularText}>Generate code</Text>
+      </TouchableOpacity>
+
+      <View style={{height: 200, width: '100%'}}>
+        <FlatList
+          style={{width: '100%'}}
+          contentContainerStyle={{
+            width: '100%',
+            justifyContent: 'center',
+          }}
+          data={locations}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </ScrollView>
+  );
 };
 
 const Profile = (props) => {
@@ -197,8 +301,22 @@ const RootView = (props) => {
   const [healthStatus, setHealthStatus] = React.useState(1);
 
   useEffect(() => {
+    Linking.addEventListener('url', handleOpenURL);
     handleInitialLoad();
   }, []);
+
+  const handleOpenURL = async (event) => {
+    const parts = event.url.split('//');
+    const token = parts[1];
+    try {
+      console.log(parts, 'oo');
+      const response = await api.post('/checkin', {token: token});
+      alert(`Checked in at ${response.data.location_name}`);
+    } catch (error) {
+      console.warn(error.message);
+      alert('Error checking in');
+    }
+  };
 
   const handleInitialLoad = async () => {
     setLoading(false);

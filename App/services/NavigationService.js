@@ -41,6 +41,7 @@ const initialLoad = async () => {
       fontSize: 10,
     },
   });
+
   const jwt = await AsyncStorage.getItem('jwt');
   jwt === null ? Initial() : RootView();
 };

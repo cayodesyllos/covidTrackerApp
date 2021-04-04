@@ -22,15 +22,18 @@
     "react": "16.13.1",
     "react-native": "0.63.3",
     "react-native-confirmation-code-field": "^6.5.1",
+    "react-native-deep-link": "^0.2.9",
     "react-native-gesture-handler": "^1.9.0",
     "react-native-image-picker": "^2.3.4",
     "react-native-navigation": "^7.4.0",
+    "react-native-qrcode-generator": "^1.2.2",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.15.0",
     "react-native-scrollable-tab-view": "^1.0.0",
     "react-native-svg": "^12.1.0",
-    "react-native-tab-view": "^2.15.2"
+    "react-native-tab-view": "^2.15.2",
+    "react-native-webview": "^11.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
