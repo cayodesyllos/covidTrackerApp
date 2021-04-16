@@ -239,7 +239,7 @@ const Locations = (props) => {
       }}>
       <TouchableWithoutFeedback
         onPress={() => {
-          console.warn('open');
+          navigationService.LocationDetail(props.componentId, item);
         }}
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <FontAwesomeIcon

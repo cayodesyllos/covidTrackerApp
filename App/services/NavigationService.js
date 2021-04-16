@@ -110,11 +110,57 @@ const RootView = () => {
   });
 };
 
+function LocationDetail(componentId, goToPageWithProps) {
+  Navigation.push(componentId, {
+    component: {
+      name: 'CovidTracker.LocationDetail',
+      passProps: {
+        goToPageWithProps,
+      },
+
+      options: {
+        animations: {
+          showModal: {
+            alpha: {
+              from: 0,
+              to: 1,
+              duration: 300,
+            },
+          },
+        },
+        topBar: {
+          elevation: 1.5,
+          title: {
+            text: goToPageWithProps.name,
+            alignment: 'center',
+            fontSize: 18,
+            color: 'white',
+          },
+          backButton: {
+            visible: true,
+            showTitle: false,
+            title: null,
+            color: 'white',
+          },
+          background: {
+            color: 'black',
+          },
+          drawBehind: false,
+          visible: true,
+          animate: false,
+          noBorder: false,
+        },
+      },
+    },
+  });
+}
+
 const navigationService = {
   SignUp,
   Login,
   RootView,
   initialLoad,
+  LocationDetail,
   Initial,
 };
 
