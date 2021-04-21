@@ -213,8 +213,10 @@ const Locations = (props) => {
   const [search, setSearch] = React.useState([]);
 
   useEffect(() => {
-    mountRequests();
-  }, []);
+    if (!props.checkedIn) {
+      mountRequests();
+    }
+  }, [props.checkedIn]);
 
   useEffect(() => {}, [checkins]);
 
@@ -514,6 +516,7 @@ const CustomTab = (props) => {
 const RootView = (props) => {
   const [currTab, setCurrTab] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [checkedIn, setCheckedIn] = useState(false);
   const [healthStatus, setHealthStatus] = React.useState(1);
 
   useEffect(() => {
@@ -525,21 +528,26 @@ const RootView = (props) => {
     const parts = event.url.split('//');
     const token = parts[1];
     try {
-      console.log(parts, 'oo');
+      setCheckedIn(true);
       const response = await api.post('/checkin', {token: token});
       alert(`Checked in at ${response.data.location_name}`);
     } catch (error) {
-      console.warn(error.message);
-      alert('Error checking in');
+      alert(error.response.data.error.message);
     }
+    setCheckedIn(false);
   };
 
   const handleInitialLoad = async () => {
     setLoading(false);
   };
 
-  const changeStatus = (status) => {
-    setHealthStatus(status);
+  const changeStatus = async (status) => {
+    try {
+      await api.put('/user', {infected: status === 2});
+      setHealthStatus(status);
+    } catch (error) {
+      alert('Error changing status');
+    }
   };
 
   const handleLogout = async () => {
@@ -567,7 +575,7 @@ const RootView = (props) => {
         componentId={props.componentId}
       />
       <QR componentId={props.componentId} />
-      <Locations componentId={props.componentId} />
+      <Locations checkedIn={checkedIn} componentId={props.componentId} />
       <Notifications componentId={props.componentId} />
     </ScrollableTabView>
   );
