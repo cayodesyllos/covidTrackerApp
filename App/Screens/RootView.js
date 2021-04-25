@@ -520,8 +520,12 @@ const RootView = (props) => {
   const [healthStatus, setHealthStatus] = React.useState(1);
 
   useEffect(() => {
-    Linking.addEventListener('url', handleOpenURL);
     handleInitialLoad();
+  }, []);
+
+  useEffect(() => {
+    Linking.addEventListener('url', handleOpenURL);
+    return () => Linking.removeAllListeners('url');
   }, []);
 
   const handleOpenURL = async (event) => {
