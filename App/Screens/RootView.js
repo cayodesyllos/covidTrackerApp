@@ -9,6 +9,7 @@ import {
   Linking,
   FlatList,
   TextInput,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {StyleSheet} from 'react-native';
@@ -28,14 +29,43 @@ import {
 import {
   ScrollView,
   TouchableWithoutFeedback,
+  TouchableNativeFeedback,
 } from 'react-native-gesture-handler';
 import MainStyles from '../style/MainStyles';
 import Colors from '../style/Colors';
 import QRCode from 'react-native-qrcode-generator';
 
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import prompt from 'react-native-prompt-android';
+
+PushNotification.configure({
+  onNotification: function (notification) {
+    notification.finish(PushNotificationIOS.FetchResult.NoData);
+  },
+  requestPermissions: true,
+  smallIcon: 'ic_notification',
+  largeIcon: '',
+  permissions: {
+    alert: true,
+    badge: true,
+    sound: true,
+  },
+});
+
+PushNotification.createChannel(
+  {
+    channelId: 'my-channel', // (required)
+    channelName: 'My channel', // (required)
+  },
+  (created) => console.log(`CreateChannel returned '${created}'`),
+);
+
 const QR = (props) => {
   const [locations, setLocations] = React.useState([]);
   const [selectedQr, setSelectedQr] = React.useState(null);
+  const [token, setToken] = React.useState(null);
   useEffect(() => {
     mountRequests();
   }, []);
@@ -49,6 +79,17 @@ const QR = (props) => {
     const response = await api.post('/location', {name: name});
     setLocations([response.data, ...locations]);
     setSelectedQr(`covidtracker://${response.data.token}`);
+    setToken(response.data.token);
+  };
+
+  const autoCheckin = async () => {
+    try {
+      await api.post('/checkin', {token: token});
+      props.setCheckedIn(!props.checkedIn);
+      alert('You checked-in successfully!');
+    } catch (error) {
+      alert(error.response.data.error.message);
+    }
   };
 
   const renderItem = ({item}) => (
@@ -64,9 +105,11 @@ const QR = (props) => {
         backgroundColor: Colors.DARK_GRAY,
         marginBottom: 10,
       }}>
-      <TouchableWithoutFeedback
+      <TouchableOpacity
         onPress={() => {
           setSelectedQr(`covidtracker://${item.token}`);
+          console.log('RRR', item.token);
+          setToken(item.token);
         }}
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <FontAwesomeIcon
@@ -82,7 +125,7 @@ const QR = (props) => {
         <Text style={[MainStyles.regularTextMini, {alignSelf: 'flex-end'}]}>
           {new Date(item.created_at).toLocaleString()}
         </Text>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     </View>
   );
 
@@ -101,24 +144,46 @@ const QR = (props) => {
           }}
         />
       )}
-
-      <TouchableOpacity
-        style={[MainStyles.buttonContainer, MainStyles.regularButton, {}]}
-        onPress={() => {
-          Alert.prompt('Create location', 'Input the name of the location', [
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            {
-              text: 'Create',
-              onPress: (name) => createdLocation(name),
-            },
-          ]);
-        }}>
-        <Text style={MainStyles.regularText}>Generate code</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={[MainStyles.buttonContainer, MainStyles.regularButton, {}]}
+          onPress={() => {
+            Platform.OS === 'ios'
+              ? Alert.prompt(
+                  'Create location',
+                  'Input the name of the location',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'Create',
+                      onPress: (name) => createdLocation(name),
+                    },
+                  ],
+                )
+              : prompt('Create location', 'Input the name of the location', [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Create',
+                    onPress: (name) => createdLocation(name),
+                  },
+                ]);
+          }}>
+          <Text style={MainStyles.regularText}>Generate code</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[MainStyles.buttonContainer, MainStyles.regularButton, {}]}
+          onPress={autoCheckin}>
+          <Text style={MainStyles.regularText}>Auto check-in</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={{height: 200, width: '100%'}}>
         <FlatList
@@ -428,7 +493,7 @@ const Notifications = (props) => {
 
   useEffect(() => {
     mountRequests();
-  }, []);
+  }, [props.updateNotifications]);
 
   const mountRequests = async () => {
     try {
@@ -595,15 +660,45 @@ const RootView = (props) => {
   const [loading, setLoading] = useState(true);
   const [checkedIn, setCheckedIn] = useState(false);
   const [healthStatus, setHealthStatus] = React.useState(1);
-
+  const [updateNotifications, setUpdateNotifications] = React.useState(false);
   useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      try {
+        PushNotification.localNotification({
+          channelId: 'my-channel',
+          title: remoteMessage.notification.title,
+          message: remoteMessage.notification.body,
+        });
+        setUpdateNotifications(!updateNotifications);
+      } catch (err) {}
+    });
+    notificationsSetUp();
     handleInitialLoad();
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
     Linking.addEventListener('url', handleOpenURL);
     return () => Linking.removeAllListeners('url');
   }, []);
+
+  const notificationsSetUp = async () => {
+    console.disableYellowBox = true;
+    PushNotification.requestPermissions();
+    await messaging().requestPermission();
+
+    // Get the device token
+    await messaging()
+      .getToken()
+      .then(async (token) => {
+        await api.put('/user', {fcm_token: token});
+      });
+
+    // Listen to whether the token changes
+    messaging().onTokenRefresh(async (token) => {
+      await api.put('/user', {fcm_token: token});
+    });
+  };
 
   const handleOpenURL = async (event) => {
     const parts = event.url.split('//');
@@ -634,6 +729,7 @@ const RootView = (props) => {
   };
 
   const handleLogout = async () => {
+    await api.put('/user', {fcm_token: ' '});
     await AsyncStorage.clear();
     navigationService.Initial();
   };
@@ -657,9 +753,16 @@ const RootView = (props) => {
         healthStatus={healthStatus}
         componentId={props.componentId}
       />
-      <QR componentId={props.componentId} />
+      <QR
+        setCheckedIn={setCheckedIn}
+        checkedIn={checkedIn}
+        componentId={props.componentId}
+      />
       <Locations checkedIn={checkedIn} componentId={props.componentId} />
-      <Notifications componentId={props.componentId} />
+      <Notifications
+        updateNotifications={updateNotifications}
+        componentId={props.componentId}
+      />
     </ScrollableTabView>
   );
 };
