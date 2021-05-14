@@ -10,6 +10,7 @@ import {
   FlatList,
   TextInput,
   Platform,
+  Dimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {StyleSheet} from 'react-native';
@@ -25,6 +26,7 @@ import {
   faSearch,
   faFilter,
   faLocationArrow,
+  faNewspaper,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   ScrollView,
@@ -34,7 +36,14 @@ import {
 import MainStyles from '../style/MainStyles';
 import Colors from '../style/Colors';
 import QRCode from 'react-native-qrcode-generator';
-
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+} from 'react-native-chart-kit';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -108,7 +117,7 @@ const QR = (props) => {
       <TouchableOpacity
         onPress={() => {
           setSelectedQr(`covidtracker://${item.token}`);
-          console.log('RRR', item.token);
+          console.log('RRR', item.token, item.created_at);
           setToken(item.token);
         }}
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -123,7 +132,7 @@ const QR = (props) => {
         />
         <Text style={MainStyles.regularText}>{item.name}</Text>
         <Text style={[MainStyles.regularTextMini, {alignSelf: 'flex-end'}]}>
-          {new Date(item.created_at).toLocaleString()}
+          {item.created_at}
         </Text>
       </TouchableOpacity>
     </View>
@@ -571,6 +580,164 @@ const Notifications = (props) => {
   );
 };
 
+const CovidData = (props) => {
+  const [numCases, setNumCases] = React.useState(null);
+  const [numDeaths, setNumDeaths] = React.useState(null);
+  const [newDeaths, setNewDeaths] = React.useState(null);
+  const [newCases, setNewCases] = React.useState(null);
+  const [chart, setChart] = React.useState(1);
+
+  useEffect(() => {
+    mountRequests();
+  }, []);
+
+  useEffect(() => {}, [chart]);
+
+  const todaysDate = () => {
+    var d = new Date(),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) {
+      month = '0' + month;
+    }
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+  };
+
+  const mountRequests = async () => {
+    try {
+      var options = {
+        method: 'GET',
+        url: 'https://covid-193.p.rapidapi.com/history',
+        params: {country: 'brazil', day: todaysDate()},
+        headers: {
+          'x-rapidapi-key':
+            '59b3728935msh886e2653ed04c92p161baejsna7cfbaac0a2b',
+          'x-rapidapi-host': 'covid-193.p.rapidapi.com',
+        },
+      };
+
+      api
+        .request(options)
+        .then(function (response) {
+          const data = response.data.response[0];
+          console.log(data);
+          setNumCases(data.cases.total);
+          setNewCases(data.cases.new);
+          setNumDeaths(data.deaths.total);
+          setNewDeaths(data.deaths.new);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    } catch (error) {
+      console.log(todaysDate());
+      console.warn(error.message);
+    }
+  };
+
+  const numberWithCommas = (number) => {
+    try {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    } catch (error) {
+      return 0;
+    }
+  };
+
+  return (
+    <View contentContainerStyle={MainStyles.container}>
+      <View style={{height: 20}} />
+      <View style={MainStyles.newsRow}>
+        <TouchableOpacity
+          onPress={() => setChart(1)}
+          style={
+            chart === 1 ? MainStyles.newsCellSelected : MainStyles.newsCell
+          }>
+          <Text style={MainStyles.newsTextTitle}>Total cases</Text>
+          <Text style={MainStyles.newsText}>{numberWithCommas(numCases)}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setChart(2)}
+          style={
+            chart === 2 ? MainStyles.newsCellSelected : MainStyles.newsCell
+          }>
+          <Text style={MainStyles.newsTextTitle}>Total deaths</Text>
+          <Text style={MainStyles.newsText}>{numberWithCommas(numDeaths)}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{height: 20}} />
+      <View style={MainStyles.newsRow}>
+        <TouchableOpacity
+          onPress={() => setChart(3)}
+          style={
+            chart === 3 ? MainStyles.newsCellSelected : MainStyles.newsCell
+          }>
+          <Text style={MainStyles.newsTextTitle}>New cases</Text>
+          <Text style={MainStyles.newsText}>{numberWithCommas(newCases)}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setChart(4)}
+          style={
+            chart === 4 ? MainStyles.newsCellSelected : MainStyles.newsCell
+          }>
+          <Text style={MainStyles.newsTextTitle}>New deaths</Text>
+          <Text style={MainStyles.newsText}>{numberWithCommas(newDeaths)}</Text>
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
+        <LineChart
+          data={{
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [
+              {
+                data: [
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                ],
+              },
+            ],
+          }}
+          width={Dimensions.get('window').width * 0.9} // from react-native
+          height={300}
+          yAxisLabel=""
+          yAxisSuffix=""
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={{
+            backgroundColor: Colors.PURPLE,
+            backgroundGradientFrom: Colors.PURPLE_LIGHT,
+            backgroundGradientTo: Colors.PURPLE_DARK,
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            style: {
+              borderRadius: 16,
+            },
+            propsForDots: {
+              r: '5',
+              strokeWidth: '2',
+              stroke: '#ffa726',
+            },
+          }}
+          bezier
+          style={{
+            marginVertical: 1,
+            borderRadius: 16,
+          }}
+        />
+      </View>
+    </View>
+  );
+};
+
 const CustomTab = (props) => {
   const [activeIndex, setActiveIndex] = React.useState(1);
 
@@ -622,7 +789,6 @@ const CustomTab = (props) => {
               icon={faQrcode}
             />
           </Text>
-
           <Text
             style={[styles.Btn]}
             onPress={() => {
@@ -633,9 +799,10 @@ const CustomTab = (props) => {
                 color: activeIndex === 2 ? Colors.PURPLE : 'white',
               }}
               size={32}
-              icon={faMapMarkerAlt}
+              icon={faNewspaper}
             />
           </Text>
+
           <Text
             style={[styles.Btn]}
             onPress={() => {
@@ -644,6 +811,19 @@ const CustomTab = (props) => {
             <FontAwesomeIcon
               style={{
                 color: activeIndex === 3 ? Colors.PURPLE : 'white',
+              }}
+              size={32}
+              icon={faMapMarkerAlt}
+            />
+          </Text>
+          <Text
+            style={[styles.Btn]}
+            onPress={() => {
+              handleIndexChange(4);
+            }}>
+            <FontAwesomeIcon
+              style={{
+                color: activeIndex === 4 ? Colors.PURPLE : 'white',
               }}
               size={32}
               icon={faBell}
@@ -758,6 +938,7 @@ const RootView = (props) => {
         checkedIn={checkedIn}
         componentId={props.componentId}
       />
+      <CovidData componentId={props.componentId} />
       <Locations checkedIn={checkedIn} componentId={props.componentId} />
       <Notifications
         updateNotifications={updateNotifications}

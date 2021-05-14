@@ -25,6 +25,7 @@
     "metro-react-native-babel-transformer": "^0.64.0",
     "react": "16.13.1",
     "react-native": "0.63.3",
+    "react-native-chart-kit": "^6.11.0",
     "react-native-confirmation-code-field": "^6.5.1",
     "react-native-deep-link": "^0.2.9",
     "react-native-firebase": "^5.6.0",
@@ -38,7 +39,7 @@
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.15.0",
     "react-native-scrollable-tab-view": "^1.0.0",
-    "react-native-svg": "^12.1.0",
+    "react-native-svg": "^12.1.1",
     "react-native-tab-view": "^2.15.2",
     "react-native-webview": "^11.3.2"
   },

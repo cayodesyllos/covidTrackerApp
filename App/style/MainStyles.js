@@ -66,6 +66,40 @@ const styles = StyleSheet.create({
     borderBottomColor: '#FFFFFF',
     flex: 1,
   },
+  newsRow: {
+    width: '100%',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+  },
+  newsCell: {
+    width: '40%',
+    backgroundColor: Colors.DARKER_GRAY,
+    borderRadius: 3,
+    height: 100,
+    justifyContent: 'center',
+  },
+
+  newsCellSelected: {
+    width: '40%',
+    backgroundColor: Colors.DARK_GRAY,
+    borderRadius: 3,
+    height: 100,
+    justifyContent: 'center',
+  },
+  newsText: {
+    fontWeight: '900',
+    fontSize: 18,
+    color: Colors.LIGHT_GRAY,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
+  newsTextTitle: {
+    fontWeight: '900',
+    fontSize: 22,
+    color: Colors.PURPLE,
+    textAlign: 'center',
+    textAlignVertical: 'top',
+  },
 });
 
 export default styles;
