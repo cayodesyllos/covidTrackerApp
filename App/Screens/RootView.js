@@ -585,6 +585,11 @@ const CovidData = (props) => {
   const [numDeaths, setNumDeaths] = React.useState(null);
   const [newDeaths, setNewDeaths] = React.useState(null);
   const [newCases, setNewCases] = React.useState(null);
+  const [labels, setLabels] = React.useState([]);
+  const [data1, setData1] = React.useState([]);
+  const [data2, setData2] = React.useState([]);
+  const [data3, setData3] = React.useState([]);
+  const [data4, setData4] = React.useState([]);
   const [chart, setChart] = React.useState(1);
 
   useEffect(() => {
@@ -592,6 +597,16 @@ const CovidData = (props) => {
   }, []);
 
   useEffect(() => {}, [chart]);
+
+  const convertToThousand = (num) => {
+    if (num > 999 && num < 1000000) {
+      return (num / 1000).toFixed(1) + 'K'; // convert to K for number from > 1000 < 1 million
+    } else if (num > 1000000) {
+      return (num / 1000000).toFixed(1) + 'M'; // convert to M for number from > 1 million
+    } else if (num < 900) {
+      return num; // if value < 1000, nothing to do
+    }
+  };
 
   const todaysDate = () => {
     var d = new Date(),
@@ -611,7 +626,7 @@ const CovidData = (props) => {
 
   const mountRequests = async () => {
     try {
-      var options = {
+      const options = {
         method: 'GET',
         url: 'https://covid-193.p.rapidapi.com/history',
         params: {country: 'brazil', day: todaysDate()},
@@ -635,9 +650,33 @@ const CovidData = (props) => {
         .catch(function (error) {
           console.error(error);
         });
+
+      const options_all = {
+        method: 'GET',
+        url: 'https://api.covid19api.com/dayone/country/brazil',
+      };
+
+      api.request(options_all).then(async (response) => {
+        const data_filtered = await response.data.filter(
+          (e) => e.Date.split('T')[0].split('-')[2] === '01',
+        );
+
+        const labels_ = await data_filtered.map((e) => e.Date.split('T')[0]);
+
+        const data1_ = await data_filtered.map((e) => e.Confirmed);
+        const data2_ = await data_filtered.map((e) => e.Deaths);
+        const data3_ = await data_filtered.map((e) => e.Confirmed);
+        const data4_ = await data_filtered.map((e) => e.Deaths);
+
+        setLabels(labels_);
+        console.log(labels, data1_, data2_, data3_, data4_);
+        setData1(data1_);
+        setData2(data2_);
+        setData3(data3_);
+        setData4(data4_);
+      });
     } catch (error) {
-      console.log(todaysDate());
-      console.warn(error.message);
+      console.log(error.message);
     }
   };
 
@@ -691,48 +730,60 @@ const CovidData = (props) => {
       </View>
       <View
         style={{flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
-        <LineChart
-          data={{
-            labels: ['January', 'February', 'March', 'April', 'May'],
-            datasets: [
-              {
-                data: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                ],
+        {labels.length > 0 && data1.length > 0 && (
+          <LineChart
+            data={{
+              labels: labels,
+              datasets: [
+                {
+                  data:
+                    chart === 1
+                      ? data1
+                      : chart === 2
+                      ? data2
+                      : chart === 3
+                      ? data3
+                      : data4,
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width * 0.9} // from react-native
+            height={300}
+            yAxisLabel=""
+            yAxisSuffix=""
+            yAxisInterval={1} // optional, defaults to 1
+            formatXLabel={(e) => {
+              const part1 = e.split('-')[1];
+              const part2 = e.split('-')[0];
+              const resp = parseInt(part1) % 4 === 0 ? part1 + '/' + part2 : '';
+              return resp;
+            }}
+            formatYLabel={(e) => {
+              return convertToThousand(e);
+            }}
+            chartConfig={{
+              backgroundColor: Colors.PURPLE,
+              backgroundGradientFrom: Colors.PURPLE_LIGHT,
+              backgroundGradientTo: Colors.PURPLE_DARK,
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
               },
-            ],
-          }}
-          width={Dimensions.get('window').width * 0.9} // from react-native
-          height={300}
-          yAxisLabel=""
-          yAxisSuffix=""
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: Colors.PURPLE,
-            backgroundGradientFrom: Colors.PURPLE_LIGHT,
-            backgroundGradientTo: Colors.PURPLE_DARK,
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
+              propsForDots: {
+                r: '5',
+                strokeWidth: '2',
+                stroke: '#ffa726',
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 1,
               borderRadius: 16,
-            },
-            propsForDots: {
-              r: '5',
-              strokeWidth: '2',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier
-          style={{
-            marginVertical: 1,
-            borderRadius: 16,
-          }}
-        />
+            }}
+          />
+        )}
       </View>
     </View>
   );
