@@ -665,11 +665,18 @@ const CovidData = (props) => {
 
         const data1_ = await data_filtered.map((e) => e.Confirmed);
         const data2_ = await data_filtered.map((e) => e.Deaths);
-        const data3_ = await data_filtered.map((e) => e.Confirmed);
-        const data4_ = await data_filtered.map((e) => e.Deaths);
+        const data3_ = await data_filtered.map((e, index) => {
+          return index > 0
+            ? e.Confirmed - data_filtered[index - 1].Confirmed
+            : e.Confirmed;
+        });
+        const data4_ = await data_filtered.map((e, index) => {
+          return index > 0
+            ? e.Deaths - data_filtered[index - 1].Deaths
+            : e.Deaths;
+        });
 
         setLabels(labels_);
-        console.log(labels, data1_, data2_, data3_, data4_);
         setData1(data1_);
         setData2(data2_);
         setData3(data3_);
