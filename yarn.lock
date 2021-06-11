@@ -2401,6 +2401,11 @@ data-urls@^1.1.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
+date-and-time@0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/date-and-time/-/date-and-time-0.9.0.tgz#1524579e56dc07675c640b41735a7665c0659240"
+  integrity sha512-4JybB6PbR+EebpFx/KyR5Ybl+TcdXMLIJkyYsCx3P4M4CWGMuDyFF19yh6TyasMAIF5lrsgIxiSHBXh2FFc7Fg==
+
 dayjs@^1.8.15:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.9.3.tgz#b7f94b22ad2a136a4ca02a01ab68ae893fe1a268"
@@ -5949,6 +5954,11 @@ react-native-confirmation-code-field@^6.5.1:
   resolved "https://registry.yarnpkg.com/react-native-confirmation-code-field/-/react-native-confirmation-code-field-6.5.1.tgz#0097c9748c2abbe28d8b34ee343ef60cf93434c2"
   integrity sha512-CjNx0G6CnwNKasQBVQCNdHsZU+RCPMQENgns65inR7AoOS6wcTdA3cuiPtx7mZJ+Z44c+mj3568xrEZVpd9EUg==
 
+react-native-date-picker@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-3.3.1.tgz#1f8b0712967c1e01257d32bab759aa64d6ffb601"
+  integrity sha512-9784eFZtxGooIitLSpDRrjWuJzc6vSmQzubZTzLRxMDHIHt2wlAep3QxVMFKj1SSPXNBjM4vY8CbkJXFlYgSNQ==
+
 react-native-deep-link@^0.2.9:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/react-native-deep-link/-/react-native-deep-link-0.2.9.tgz#eaa699c77b065eb5985529c33996b1cf091c52e8"
@@ -5987,6 +5997,14 @@ react-native-iphone-x-helper@^1.3.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
   integrity sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg==
+
+react-native-masked-text@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/react-native-masked-text/-/react-native-masked-text-1.13.0.tgz#533fde8c45ccbaa1d6b0df30bf19b84b4ace3de3"
+  integrity sha512-iMku5Ky6DP4fTRosjsYNJOhH8yoBQCzRALBdv1wVDKmCBQhhVE8RHr5EW4SNUjkYTZL473sDdEKl4NI948q9FQ==
+  dependencies:
+    date-and-time "0.9.0"
+    tinymask "1.0.2"
 
 react-native-navigation@^7.14.0:
   version "7.14.0"
@@ -6044,6 +6062,11 @@ react-native-scrollable-tab-view@^1.0.0:
     create-react-class "^15.6.2"
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.3"
+
+react-native-stepper-ui@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-stepper-ui/-/react-native-stepper-ui-0.0.9.tgz#b62c6bb8f3f81750458bbcdc44d8e668152eaed8"
+  integrity sha512-SnG1r73Ka0v3588MafTRbIJ1I6IF+d/GswQSPW4LsFOjgecwkNsTMjPgcAU14gV4ymts/38JmqXBsmztwR113Q==
 
 react-native-svg@^12.1.1:
   version "12.1.1"
@@ -7076,6 +7099,11 @@ time-stamp@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
   integrity sha1-dkpaEa9QVhkhsTPztE5hhofg9cM=
+
+tinymask@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/tinymask/-/tinymask-1.0.2.tgz#df3775a94087b0d3d056c256e8923c01b7ec0941"
+  integrity sha1-3zd1qUCHsNPQVsJW6JI8AbfsCUE=
 
 tmp@^0.0.33:
   version "0.0.33"

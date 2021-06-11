@@ -15,7 +15,7 @@ import MainStyles from '../style/MainStyles';
 import api from '../services/api';
 import Logo from '../Components/Logo';
 
-export default class SignUp extends Component {
+export default class Login extends Component {
   state = {
     password: '',
     email: '',
@@ -86,7 +86,7 @@ export default class SignUp extends Component {
           <TouchableHighlight
             disabled={this.state.loading}
             onPress={async () => {
-              navigationService.SignUp();
+              navigationService.Login();
             }}>
             <Text
               style={[

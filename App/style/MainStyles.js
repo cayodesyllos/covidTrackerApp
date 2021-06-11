@@ -10,9 +10,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 50,
+    height: 250,
   },
   container: {
-    flex: 1,
+    flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -39,8 +40,19 @@ const styles = StyleSheet.create({
   regularButton: {
     backgroundColor: Colors.PURPLE,
   },
+  regularButtonSecondary: {
+    backgroundColor: '#FFFFFF',
+  },
+  regularButtonDisabled: {
+    backgroundColor: Colors.LIGHT_GRAY,
+  },
   regularText: {
     color: 'white',
+    alignItems: 'center',
+    fontSize: 16,
+  },
+  regularTextSecondary: {
+    color: Colors.PURPLE,
     alignItems: 'center',
     fontSize: 16,
   },
@@ -59,6 +71,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  dropDownContainer: {
+    borderBottomColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    borderBottomWidth: 1,
+    height: 45,
+    width: 250,
+    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkBoxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: 'center',
   },
   inputs: {
     height: 45,
@@ -96,6 +126,20 @@ const styles = StyleSheet.create({
   newsTextTitle: {
     fontWeight: '900',
     fontSize: 22,
+    color: Colors.PURPLE,
+    textAlign: 'center',
+    textAlignVertical: 'top',
+  },
+  TextTitle: {
+    fontWeight: '900',
+    fontSize: 22,
+    color: 'white',
+    textAlign: 'center',
+    textAlignVertical: 'top',
+  },
+  TextSubTitle: {
+    fontWeight: '400',
+    fontSize: 18,
     color: Colors.PURPLE,
     textAlign: 'center',
     textAlignVertical: 'top',

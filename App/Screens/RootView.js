@@ -260,18 +260,40 @@ const Profile = (props) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{marginBottom: 30}}>
+
+      <View style={{marginTop: 30}}>
+        <Text style={[MainStyles.regularText, {marginBottom: 15}]}>
+          Personal info
+        </Text>
         <TouchableOpacity
           style={[MainStyles.buttonContainer, MainStyles.regularButton, {}]}
           onPress={async () => {
-            await props.logout();
+            navigationService.UpdateComorbidities();
           }}>
-          <Text style={MainStyles.regularText}>Logout</Text>
+          <Text style={MainStyles.regularText}>Update comorbidities</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          style={[MainStyles.buttonContainer, MainStyles.regularButton, {}]}
           onPress={async () => {
-            navigationService.SignUp();
+            navigationService.UpdateVaccine();
           }}>
+          <Text style={MainStyles.regularText}>Update Vaccine</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{marginBottom: 30}}>
+        <TouchableOpacity
+          style={[
+            MainStyles.buttonContainer,
+            MainStyles.regularButtonSecondary,
+            {},
+          ]}
+          onPress={async () => {
+            await props.logout();
+          }}>
+          <Text style={MainStyles.regularTextSecondary}>Logout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={async () => {}}>
           <Text style={[MainStyles.regularText, {textAlign: 'center'}]}>
             Delete Account
           </Text>
@@ -312,9 +334,7 @@ const Locations = (props) => {
         marginBottom: 10,
       }}>
       <TouchableWithoutFeedback
-        onPress={() => {
-          // navigationService.LocationDetail(props.componentId, item);
-        }}
+        onPress={() => {}}
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <FontAwesomeIcon
           style={{
@@ -527,9 +547,7 @@ const Notifications = (props) => {
         marginBottom: 10,
       }}>
       <TouchableWithoutFeedback
-        onPress={() => {
-          // navigationService.LocationDetail(props.componentId, item);
-        }}
+        onPress={() => {}}
         style={{flexDirection: 'column', justifyContent: 'space-evenly'}}>
         <View
           style={{

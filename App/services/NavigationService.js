@@ -43,7 +43,18 @@ const initialLoad = async () => {
   });
 
   const jwt = await AsyncStorage.getItem('jwt');
-  jwt === null ? Initial() : RootView();
+  if (!jwt) {
+    Initial();
+  }
+
+  const step = await AsyncStorage.getItem('step');
+  if (step === '5') {
+    RootView();
+  } else if (step === '4') {
+    InformedConsent();
+  } else {
+    SignUp();
+  }
 };
 
 const SignUp = () => {
@@ -70,6 +81,54 @@ const Login = () => {
           {
             component: {
               name: 'CovidTracker.Login',
+            },
+          },
+        ],
+      },
+    },
+  });
+};
+
+const InformedConsent = () => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'CovidTracker.InformedConsent',
+            },
+          },
+        ],
+      },
+    },
+  });
+};
+
+const UpdateComorbidities = () => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'CovidTracker.UpdateComorbidities',
+            },
+          },
+        ],
+      },
+    },
+  });
+};
+
+const UpdateVaccine = () => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'CovidTracker.UpdateVaccine',
             },
           },
         ],
@@ -110,58 +169,15 @@ const RootView = () => {
   });
 };
 
-function LocationDetail(componentId, goToPageWithProps) {
-  Navigation.push(componentId, {
-    component: {
-      name: 'CovidTracker.LocationDetail',
-      passProps: {
-        goToPageWithProps,
-      },
-
-      options: {
-        animations: {
-          showModal: {
-            alpha: {
-              from: 0,
-              to: 1,
-              duration: 300,
-            },
-          },
-        },
-        topBar: {
-          elevation: 1.5,
-          title: {
-            text: goToPageWithProps.name,
-            alignment: 'center',
-            fontSize: 18,
-            color: 'white',
-          },
-          backButton: {
-            visible: true,
-            showTitle: false,
-            title: null,
-            color: 'white',
-          },
-          background: {
-            color: 'black',
-          },
-          drawBehind: false,
-          visible: true,
-          animate: false,
-          noBorder: false,
-        },
-      },
-    },
-  });
-}
-
 const navigationService = {
   SignUp,
   Login,
   RootView,
   initialLoad,
-  LocationDetail,
   Initial,
+  InformedConsent,
+  UpdateComorbidities,
+  UpdateVaccine,
 };
 
 export default navigationService;
