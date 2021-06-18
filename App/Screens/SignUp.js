@@ -394,7 +394,7 @@ export default class SignUp extends Component {
                       color: !this.state.diabetis ? Colors.PURPLE : 'white',
                     },
                   ]}>
-                  Diabetis melitus
+                  Diabetes melitus
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity

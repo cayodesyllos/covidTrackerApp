@@ -37,6 +37,15 @@ const styles = StyleSheet.create({
     width: 250,
     borderRadius: 10,
   },
+  selectContainerBig: {
+    height: 75,
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    marginBottom: 20,
+    width: 250,
+    borderRadius: 10,
+  },
   regularButton: {
     backgroundColor: Colors.PURPLE,
   },

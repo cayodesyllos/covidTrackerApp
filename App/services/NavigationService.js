@@ -41,7 +41,6 @@ const initialLoad = async () => {
       fontSize: 10,
     },
   });
-
   const jwt = await AsyncStorage.getItem('jwt');
   if (!jwt) {
     Initial();
@@ -137,6 +136,22 @@ const UpdateVaccine = () => {
   });
 };
 
+const CovidSeverity = () => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'CovidTracker.CovidSeverity',
+            },
+          },
+        ],
+      },
+    },
+  });
+};
+
 const Initial = () => {
   Navigation.setRoot({
     root: {
@@ -178,6 +193,7 @@ const navigationService = {
   InformedConsent,
   UpdateComorbidities,
   UpdateVaccine,
+  CovidSeverity,
 };
 
 export default navigationService;

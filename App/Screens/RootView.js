@@ -229,7 +229,10 @@ const Profile = (props) => {
             },
           ]}
           onPress={async () => {
-            await props.changeStatus(1);
+            if (props.healthStatus === 2) {
+              await props.changeStatus(1);
+              navigationService.CovidSeverity();
+            }
           }}>
           <Text
             style={[
