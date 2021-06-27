@@ -7,6 +7,7 @@ import InformedConsent from '../Screens/InformedConsent';
 import UpdateComorbidities from '../Screens/UpdateComorbidities';
 import UpdateVaccine from '../Screens/UpdateVaccine';
 import CovidSeverity from '../Screens/CovidSeverity';
+import LongTerm from '../Screens/LongTerm';
 
 export function registerScreens() {
   Navigation.registerComponent('CovidTracker.SignUp', () => SignUpScreen);
@@ -29,6 +30,8 @@ export function registerScreens() {
     'CovidTracker.CovidSeverity',
     () => CovidSeverity,
   );
+
+  Navigation.registerComponent('CovidTracker.LongTerm', () => LongTerm);
 
   Navigation.registerComponent('CovidTracker.RootView', () => RootView);
 }

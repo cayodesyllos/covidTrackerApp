@@ -136,6 +136,26 @@ const UpdateVaccine = () => {
   });
 };
 
+const LongTerm = (user_id, infection_id) => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              passProps: {
+                user_id: user_id,
+                infection_id: infection_id,
+              },
+              name: 'CovidTracker.LongTerm',
+            },
+          },
+        ],
+      },
+    },
+  });
+};
+
 const CovidSeverity = () => {
   Navigation.setRoot({
     root: {
@@ -194,6 +214,7 @@ const navigationService = {
   UpdateComorbidities,
   UpdateVaccine,
   CovidSeverity,
+  LongTerm,
 };
 
 export default navigationService;

@@ -974,6 +974,40 @@ const RootView = (props) => {
 
   const handleInitialLoad = async () => {
     const response = await api.get('/user');
+    if (response.data.infection) {
+      const today = new Date();
+      const infection_creation = new Date(response.data.infection.created_at);
+      const diffTime = Math.abs(today - infection_creation);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays >= 90) {
+        Alert.alert(
+          'It has been over 3 months since you recovered from Covid-19',
+          'Could you tell us about your long term symtoms?',
+          [
+            {
+              text: 'Yes',
+              onPress: () => {
+                navigationService.LongTerm(
+                  response.data.id,
+                  response.data.infection.id,
+                );
+              },
+            },
+            {text: 'Maybe later', onPress: () => {}},
+            {
+              text: 'Never',
+              onPress: () => {
+                api.post('/longterm', {
+                  infection_id: response.data.infection.id,
+                  long_term_status: 'NEVER',
+                });
+              },
+            },
+          ],
+        );
+      }
+    }
     setHealthStatus(response.data.infected ? 2 : 1);
     setLoading(false);
   };
