@@ -23,6 +23,7 @@
     "@react-navigation/native": "^5.8.10",
     "axios": "^0.20.0",
     "metro-react-native-babel-transformer": "^0.64.0",
+    "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-native": "0.63.3",
     "react-native-chart-kit": "^6.11.0",
