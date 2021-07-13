@@ -8,6 +8,7 @@ import UpdateComorbidities from '../Screens/UpdateComorbidities';
 import UpdateVaccine from '../Screens/UpdateVaccine';
 import CovidSeverity from '../Screens/CovidSeverity';
 import LongTerm from '../Screens/LongTerm';
+import Tutorial from '../Screens/Tutorial';
 
 export function registerScreens() {
   Navigation.registerComponent('CovidTracker.SignUp', () => SignUpScreen);
@@ -32,6 +33,8 @@ export function registerScreens() {
   );
 
   Navigation.registerComponent('CovidTracker.LongTerm', () => LongTerm);
+
+  Navigation.registerComponent('CovidTracker.Tutorial', () => Tutorial);
 
   Navigation.registerComponent('CovidTracker.RootView', () => RootView);
 }

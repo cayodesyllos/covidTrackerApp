@@ -47,8 +47,14 @@ const initialLoad = async () => {
   }
 
   const step = await AsyncStorage.getItem('step');
+  const tutorial = await AsyncStorage.getItem('tutorial');
+
   if (step === '5') {
-    RootView();
+    if (!tutorial) {
+      Tutorial();
+    } else {
+      RootView();
+    }
   } else if (step === '4') {
     InformedConsent();
   } else {
@@ -64,6 +70,22 @@ const SignUp = () => {
           {
             component: {
               name: 'CovidTracker.SignUp',
+            },
+          },
+        ],
+      },
+    },
+  });
+};
+
+const Tutorial = () => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'CovidTracker.Tutorial',
             },
           },
         ],

@@ -30,11 +30,16 @@ const QR = (props) => {
     setLocations(response.data);
   };
 
-  const createdLocation = async (name) => {
-    const response = await api.post('/location', {name: name});
-    setLocations([response.data, ...locations]);
-    setSelectedQr(`covidtracker://${response.data.token}`);
-    setToken(response.data.token);
+  const createLocation = async (name) => {
+    console.warn(name);
+    try {
+      const response = await api.post('/location', {name: name});
+      setLocations([response.data, ...locations]);
+      setSelectedQr(`covidtracker://${response.data.token}`);
+      setToken(response.data.token);
+    } catch (error) {
+      alert(error.response.data.error.message);
+    }
   };
 
   const autoCheckin = async () => {
@@ -115,7 +120,7 @@ const QR = (props) => {
                     },
                     {
                       text: 'Create',
-                      onPress: (name) => createdLocation(name),
+                      onPress: (name) => createLocation(name),
                     },
                   ],
                 )
@@ -127,7 +132,7 @@ const QR = (props) => {
                   },
                   {
                     text: 'Create',
-                    onPress: (name) => createdLocation(name),
+                    onPress: (name) => createLocation(name),
                   },
                 ]);
           }}>
