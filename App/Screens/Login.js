@@ -34,7 +34,19 @@ export default class Login extends Component {
       AsyncStorage.setItem('jwt', response.data.token);
 
       this.setState({loading: false});
-      navigationService.RootView();
+
+      if (response.data.agreed) {
+        const tutorial = await AsyncStorage.getItem('tutorial');
+        AsyncStorage.setItem('step', '5');
+        if (!tutorial) {
+          navigationService.Tutorial();
+        } else {
+          navigationService.RootView();
+        }
+      } else {
+        AsyncStorage.setItem('step', '4');
+        navigationService.InformedConsent();
+      }
     } catch (error) {
       this.setState({loading: false});
       Alert.alert('Fail to login', error.message);

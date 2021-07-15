@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {Image, Text, View} from 'react-native';
 import Colors from '../style/Colors';
 import {StyleSheet} from 'react-native';
 
@@ -7,7 +7,7 @@ class Logo extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.text}>CovidTracker</Text>
+        <Image source={require('../Assets/CovidTrackerLogo.png')} />
       </View>
     );
   }

@@ -41,6 +41,9 @@ const initialLoad = async () => {
       fontSize: 10,
     },
   });
+
+  // await AsyncStorage.removeItem('tutorial');
+
   const jwt = await AsyncStorage.getItem('jwt');
   if (!jwt) {
     Initial();
@@ -237,6 +240,7 @@ const navigationService = {
   UpdateVaccine,
   CovidSeverity,
   LongTerm,
+  Tutorial,
 };
 
 export default navigationService;
