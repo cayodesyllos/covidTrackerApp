@@ -260,7 +260,7 @@ const RootView = (props) => {
 
   const handleLogout = async () => {
     await api.put('/user', {fcm_token: ' '});
-    await AsyncStorage.removeItem('jwt');
+    await AsyncStorage.clear();
     navigationService.Initial();
   };
 

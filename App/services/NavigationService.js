@@ -41,12 +41,11 @@ const initialLoad = async () => {
       fontSize: 10,
     },
   });
-
-  // await AsyncStorage.removeItem('tutorial');
-
+  await AsyncStorage.clear();
   const jwt = await AsyncStorage.getItem('jwt');
   if (!jwt) {
     Initial();
+    return;
   }
 
   const step = await AsyncStorage.getItem('step');

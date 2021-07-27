@@ -98,7 +98,7 @@ export default class Login extends Component {
           <TouchableHighlight
             disabled={this.state.loading}
             onPress={async () => {
-              navigationService.Login();
+              navigationService.SignUp();
             }}>
             <Text
               style={[

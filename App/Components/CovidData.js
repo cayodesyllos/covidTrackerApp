@@ -67,7 +67,6 @@ const CovidData = (props) => {
         .request(options)
         .then(function (response) {
           const data = response.data.response[0];
-          console.log(data);
           setNumCases(data.cases.total);
           setNewCases(data.cases.new);
           setNumDeaths(data.deaths.total);
@@ -81,11 +80,10 @@ const CovidData = (props) => {
         method: 'GET',
         url: 'https://api.covid19api.com/dayone/country/brazil',
       };
-
-      api.request(options_all).then(async (response) => {
-        const data_filtered = await response.data.filter(
-          (e) => e.Date.split('T')[0].split('-')[2] === '01',
-        );
+      await api.request(options_all).then(async (response) => {
+        const data_filtered = await response.data.filter((e) => {
+          return e.Date && e.Date.split('T')[0].split('-')[2] === '01';
+        });
 
         const labels_ = await data_filtered.map((e) => e.Date.split('T')[0]);
 
@@ -108,9 +106,7 @@ const CovidData = (props) => {
         setData3(data3_);
         setData4(data4_);
       });
-    } catch (error) {
-      console.log(error.message);
-    }
+    } catch (error) {}
   }, []);
 
   const numberWithCommas = (number) => {

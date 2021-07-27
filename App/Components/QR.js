@@ -68,7 +68,6 @@ const QR = (props) => {
       <TouchableOpacity
         onPress={() => {
           setSelectedQr(`covidtracker://${item.token}`);
-          console.log('RRR', item.token, item.created_at);
           setToken(item.token);
         }}
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>

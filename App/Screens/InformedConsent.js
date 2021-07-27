@@ -48,7 +48,7 @@ export default class InformedConsent extends Component {
             onPress={async () => {
               await api.put('/user', {agreed: true});
               await AsyncStorage.setItem('step', '5');
-              navigationService.RootView();
+              navigationService.Tutorial();
             }}>
             <Text style={MainStyles.regularText}>I consent</Text>
           </TouchableHighlight>
