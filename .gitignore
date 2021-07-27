@@ -22,6 +22,9 @@ DerivedData
 *.xcuserstate
 
 # Android/IntelliJ
+*.hprof
+.hprof
+android/java_pid69708.hprof
 #
 build/
 .idea
@@ -34,6 +37,7 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+/yarn.lock
 
 # BUCK
 buck-out/
@@ -57,3 +61,7 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+ios/Podfile.lock
+
+# JSON files
+package-lock.json
