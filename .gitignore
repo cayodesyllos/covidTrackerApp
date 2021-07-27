@@ -65,3 +65,5 @@ ios/Podfile.lock
 
 # JSON files
 package-lock.json
+
+*.hprof
